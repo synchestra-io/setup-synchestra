@@ -1,0 +1,27 @@
+name: Setup Synchestra
+description: Install an exact released Synchestra CLI binary
+inputs:
+  version:
+    description: Exact Synchestra CLI release tag, such as cli-v0.21.1
+    required: true
+  expected-sha256:
+    description: Optional independent SHA-256 for this platform's archive
+    required: false
+outputs:
+  version:
+    description: Installed release tag
+    value: ${{ steps.install.outputs.version }}
+  path:
+    description: Installed binary path
+    value: ${{ steps.install.outputs.path }}
+runs:
+  using: composite
+  steps:
+    - id: install
+      shell: pwsh
+      env:
+        SETUP_ACTION_PATH: ${{ github.action_path }}
+        SETUP_GITHUB_TOKEN: ${{ github.token }}
+        SETUP_VERSION: ${{ inputs.version }}
+        SETUP_EXPECTED_SHA256: ${{ inputs.expected-sha256 }}
+      run: '& "$env:SETUP_ACTION_PATH/install.ps1"'
